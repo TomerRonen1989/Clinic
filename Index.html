@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>תזכורות טיפול</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Heebo',sans-serif;background:#f0f2f5;min-height:100vh;padding-bottom:80px}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e5;display:flex;z-index:200}
+.nb{flex:1;background:none;border:none;font-family:'Heebo',sans-serif;font-size:0.72rem;font-weight:600;color:#aaa;padding:10px 4px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nb .ic{font-size:1.2rem}
+.nb.on{color:#25d366}
+.pg{display:none;padding:16px 14px;max-width:500px;margin:0 auto}
+.pg.on{display:block}
+.ph{margin-bottom:16px}
+.ph h1{font-size:1.35rem;font-weight:900;color:#111}
+.ph p{font-size:0.78rem;color:#999;margin-top:3px}
+.card{background:#fff;border-radius:16px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.cl{font-size:.65rem;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.dps{display:flex;flex-wrap:wrap;gap:6px}
+.dp{background:#f7f7f7;border:1.5px solid #eee;border-radius:30px;color:#555;font-family:'Heebo',sans-serif;font-size:.8rem;font-weight:600;padding:6px 13px;cursor:pointer;user-select:none;transition:all .15s}
+.dp.sel{background:#eafaf1;border-color:#25d366;color:#1a7a40}
+.dp:active{transform:scale(.94)}
+.cust{width:100%;background:#f7f7f7;border:1.5px solid #eee;border-radius:10px;color:#111;font-family:'Heebo',sans-serif;font-size:.9rem;padding:9px 13px;outline:none;margin-top:10px;display:none}
+.cust.vis{display:block}
+.cust:focus{border-color:#25d366}
+.sbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 2px}
+.sar{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.cb{width:20px;height:20px;border-radius:6px;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;transition:all .15s}
+.cb.on{background:#25d366;border-color:#25d366;color:#fff}
+.cb.pt{background:#eafaf1;border-color:#25d366;color:#25d366}
+.cb.ron{background:#f04e4e;border-color:#f04e4e;color:#fff}
+.cb.rpt{background:#ffeaea;border-color:#f04e4e;color:#f04e4e}
+.sl{font-size:.82rem;font-weight:600;color:#555}
+.sc{font-size:.75rem;color:#999}
+.row{background:#fff;border-radius:12px;padding:11px 14px;margin-bottom:7px;box-shadow:0 1px 3px rgba(0,0,0,.05);display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;transition:opacity .15s}
+.row.off{opacity:.38}
+.rcb{width:22px;height:22px;border-radius:7px;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0;transition:all .15s}
+.row:not(.off) .rcb{background:#25d366;border-color:#25d366;color:#fff}
+.row.red:not(.off) .rcb{background:#f04e4e;border-color:#f04e4e}
+.ri{flex:1}
+.rn{font-size:.92rem;font-weight:700;color:#111}
+.rt{font-size:.7rem;color:#25d366;font-weight:600;direction:ltr;display:inline-block}
+.nph{font-size:.65rem;color:#f0a500;margin-top:1px}
+.ra{font-size:.8rem;font-weight:700;color:#f04e4e;margin-top:2px}
+.fab{position:fixed;bottom:66px;left:14px;right:14px;max-width:472px;margin:0 auto;color:#fff;border:none;border-radius:14px;font-family:'Heebo',sans-serif;font-size:.98rem;font-weight:700;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;z-index:150;transition:all .15s}
+.fab.g{background:#25d366;box-shadow:0 4px 14px rgba(37,211,102,.35)}
+.fab.r{background:#f04e4e;box-shadow:0 4px 14px rgba(240,78,78,.3)}
+.fab:disabled{background:#ccc;box-shadow:none}
+.fab:not(:disabled):active{transform:scale(.98);opacity:.9}
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.mov.on{display:flex}
+.mod{background:#fff;border-radius:20px 20px 0 0;padding:18px 18px 32px;width:100%;max-width:500px}
+.mh{width:38px;height:4px;background:#ddd;border-radius:10px;margin:0 auto 14px}
+.ms{font-size:.68rem;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.mn{font-size:1.1rem;font-weight:900;color:#111;margin-bottom:10px}
+.mm{background:#f0f2f5;border-radius:12px;padding:11px 13px;font-size:.88rem;color:#333;line-height:1.65;margin-bottom:14px}
+.mwa{display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;border:none;border-radius:13px;font-family:'Heebo',sans-serif;font-size:.98rem;font-weight:700;padding:13px;width:100%;text-decoration:none;cursor:pointer}
+.mwa.g{background:#25d366}
+.mwa.r{background:#f04e4e}
+.mwa:active{opacity:.9}
+.msk{width:100%;background:none;border:1px solid #eee;border-radius:12px;font-family:'Heebo',sans-serif;font-size:.85rem;color:#999;padding:10px;margin-top:8px;cursor:pointer}
+.si{width:100%;background:#fff;border:1.5px solid #eee;border-radius:12px;color:#111;font-family:'Heebo',sans-serif;font-size:.9rem;padding:11px 14px;outline:none;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:12px}
+.si:focus{border-color:#25d366}
+.si::placeholder{color:#ccc}
+.mr{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:7px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.mt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mna{flex:1;font-size:.9rem;font-weight:700;color:#111;min-width:0}
+.mb{font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.mb.d{background:#ffeaea;color:#f04e4e}
+.mb.ok{background:#eafaf1;color:#25d366}
+.mph{font-size:.72rem;color:#25d366;font-weight:600;direction:ltr;white-space:nowrap}
+.mph.mis{color:#f0a500}
+.eb{background:#f7f7f7;border:1px solid #eee;border-radius:7px;font-family:'Heebo',sans-serif;font-size:.72rem;color:#666;padding:4px 9px;cursor:pointer;white-space:nowrap}
+.per{display:flex;gap:6px;margin-top:8px}
+.pei{flex:1;background:#f7f7f7;border:1.5px solid #eee;border-radius:8px;color:#111;font-family:'Heebo',sans-serif;font-size:.88rem;padding:8px 10px;outline:none;direction:ltr}
+.pei:focus{border-color:#25d366}
+.psb{background:#25d366;border:none;border-radius:8px;color:#fff;font-family:'Heebo',sans-serif;font-size:.8rem;font-weight:700;padding:8px 12px;cursor:pointer}
+.wi{width:17px;height:17px;fill:white;flex-shrink:0}
+.sp{height:64px}
+.em{text-align:center;color:#ccc;font-size:.85rem;padding:24px 0}
+</style>
+</head>
+<body>
+
+<div class="pg on" id="pg-rem">
+  <div class="ph"><h1>📅 תזכורות</h1><p id="sd"></p></div>
+  <div class="card">
+    <div class="cl">מתי הטיפול?</div>
+    <div class="dps">
+      <div class="dp sel" data-day="מחר" onclick="selDay(this)">מחר</div>
+      <div class="dp" data-day="ביום ראשון" onclick="selDay(this)">ראשון</div>
+      <div class="dp" data-day="ביום שני" onclick="selDay(this)">שני</div>
+      <div class="dp" data-day="ביום שלישי" onclick="selDay(this)">שלישי</div>
+      <div class="dp" data-day="ביום רביעי" onclick="selDay(this)">רביעי</div>
+      <div class="dp" data-day="ביום חמישי" onclick="selDay(this)">חמישי</div>
+      <div class="dp" data-day="custom" onclick="selDay(this)">✏️ אחר</div>
+    </div>
+    <input class="cust" id="custDay" type="text" placeholder="הכנס יום...">
+  </div>
+  <div class="sbar">
+    <div class="sar" id="remSelAll"><div class="cb" id="remCb"></div><span class="sl">בחר הכל</span></div>
+    <span class="sc" id="remCnt"></span>
+  </div>
+  <div id="remList"></div>
+  <div class="sp"></div>
+  <button class="fab g" id="remBtn" onclick="startRem()">
+    <svg class="wi" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <span id="remBtnTxt">שלח לכל המסומנים</span>
+  </button>
+</div>
+
+<div class="pg" id="pg-dbt">
+  <div class="ph"><h1>💰 חובות</h1><p id="dbtSub"></p></div>
+  <div class="sbar">
+    <div class="sar" id="dbtSelAll"><div class="cb" id="dbtCb"></div><span class="sl">בחר הכל</span></div>
+    <span class="sc" id="dbtCnt"></span>
+  </div>
+  <div id="dbtList"></div>
+  <div class="sp"></div>
+  <button class="fab r" id="dbtBtn" onclick="startDbt()">
+    <svg class="wi" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <span id="dbtBtnTxt">שלח תזכורת חוב</span>
+  </button>
+</div>
+
+<div class="pg" id="pg-clt">
+  <div class="ph"><h1>👥 לקוחות</h1><p>ערוך מספרי טלפון</p></div>
+  <input class="si" id="srch" type="text" placeholder="🔍 חפש לקוח..." oninput="renderClt()">
+  <div id="cltList"></div>
+</div>
+
+<div class="mov" id="mov">
+  <div class="mod" onclick="event.stopPropagation()">
+    <div class="mh"></div>
+    <div class="ms" id="mStep"></div>
+    <div class="mn" id="mName"></div>
+    <div class="mm" id="mMsg"></div>
+    <a class="mwa" id="mWa" href="#">
+      <svg class="wi" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      פתח בוואטסאפ
+    </a>
+    <button class="msk" id="mSkip">דלג — הבא ›</button>
+  </div>
+</div>
+
+<div class="bnav">
+  <button class="nb on" id="nb-rem" onclick="showPg('rem')"><span class="ic">📅</span>תזכורות</button>
+  <button class="nb" id="nb-dbt" onclick="showPg('dbt')"><span class="ic">💰</span>חובות</button>
+  <button class="nb" id="nb-clt" onclick="showPg('clt')"><span class="ic">👥</span>לקוחות</button>
+</div>
+
+<script>
+const C=[{"name":"אביאל יואב","phone":"0537692288","balance":-1050},{"name":"טל אברהם","phone":"0536811020","balance":-1050},{"name":"חן ישראלי","phone":"0526833533","balance":-1650},{"name":"ליאת עדן","phone":"0523708481","balance":0},{"name":"חיה מילר","phone":"0547380708","balance":-1750},{"name":"גבי חורש","phone":"0546643383","balance":0},{"name":"מרים פפמסטר","phone":"0534321156","balance":0},{"name":"אביאל אילוז","phone":"0526785007","balance":0},{"name":"עדי בנימין","phone":"0503020358","balance":-2450},{"name":"רון יוסף יונתן","phone":"0502076423","balance":-600},{"name":"מאשה זבין","phone":"0504048827","balance":-1050},{"name":"טל גבאי","phone":"0546332952","balance":-700},{"name":"מורן אברהם","phone":"0536782231","balance":-700},{"name":"עמנואל פוקס","phone":"0527837666","balance":-700},{"name":"יורם עדן","phone":"0523870477","balance":0},{"name":"גבריאל פלסי","phone":"0547269913","balance":-2400},{"name":"אלינוער גיגי","phone":"0506709155","balance":-1050},{"name":"ענת אלבז","phone":"0523844849","balance":-1050},{"name":"יוסף מיכאלי","phone":"0528893658","balance":-2100},{"name":"יורם לוי","phone":"0506233665","balance":-700},{"name":"הרצל ביבי","phone":"0522824433","balance":-1200},{"name":"עינת שטרן","phone":"0544342725","balance":-400},{"name":"נאוה אלדר","phone":"0522409208","balance":-350},{"name":"חרות גנטק","phone":"0508699225","balance":-350},{"name":"נוחם ואינטרוב","phone":"0544541588","balance":0},{"name":"ירון מאיר","phone":"0505213171","balance":0},{"name":"שרי ביין","phone":"0585391464","balance":-2640},{"name":"לאה קריכלי","phone":"0506233662","balance":-1050},{"name":"נתנאל ניסים מזרחי","phone":"0527156410","balance":-2100},{"name":"יוסף גיברה","phone":"0547886181","balance":-350},{"name":"רונית טל","phone":"0524484829","balance":0},{"name":"גלעד בינו","phone":"0547956112","balance":0},{"name":"נועה זקן","phone":"0546289600","balance":-700},{"name":"אתי יעקב","phone":"0504626156","balance":-350},{"name":"יצחק עמית","phone":"0523337050","balance":-350},{"name":"ענר בן יעקב","phone":"0502075861","balance":0},{"name":"אפרים בסן","phone":"0535230287","balance":0},{"name":"יאיר גנטק","phone":"0508699225","balance":-350},{"name":"שילה פרנקל","phone":"0587654450","balance":-1750},{"name":"ניסים אטל","phone":"0507847454","balance":-1390},{"name":"נתן שפירא","phone":"0505383020","balance":0},{"name":"מורן אנצלוביץ","phone":"0547556503","balance":0},{"name":"מרים לוי","phone":"0544553708","balance":-700},{"name":"דניאלה תקוע","phone":"0524829539","balance":0},{"name":"רועי בן מנחם","phone":"0546996143","balance":0},{"name":"יואב טייטלבאום","phone":"0544582752","balance":-350},{"name":"איירה סקופ","phone":"0525538132","balance":-1400},{"name":"דניאל מקיטון","phone":"0547887000","balance":-850},{"name":"ניר מסה","phone":"0508957755","balance":-1050},{"name":"אסף דהן","phone":"0528755288","balance":-350},{"name":"עדי יעקב","phone":"0508380008","balance":-700},{"name":"אלון מזרחי","phone":"0532202004","balance":-350},{"name":"רחל רבינוביץ","phone":"0587455574","balance":-240},{"name":"מאור גרסי","phone":"0528867921","balance":0},{"name":"רון ברזני","phone":"0504204382","balance":-1050},{"name":"שרון זקן","phone":"0506217488","balance":0},{"name":"פייגי אריאלי","phone":"0545466410","balance":-1400},{"name":"ליהיא אביב","phone":"0503864101","balance":-330},{"name":"טלאל בר יעקב","phone":"0547423989","balance":-1050},{"name":"אפרים דמברוביץ","phone":"0545216187","balance":-1050},{"name":"ניצה רטמן","phone":"0522402412","balance":-1050},{"name":"שמעון יחיא","phone":"0547000919","balance":-1750},{"name":"זהבית אביב אדרי","phone":"0522678011","balance":-1050},{"name":"מעין יוסף","phone":"0505241212","balance":-350},{"name":"גיל קובי","phone":"0548353527","balance":-700},{"name":"אוריה שלם","phone":"0506230548","balance":0},{"name":"גרשון פפרמסטר","phone":"0534321156","balance":-700},{"name":"רננה גנטק","phone":"0508699225","balance":-350},{"name":"יונתן מסלטון קינדי","phone":"0504647154","balance":0},{"name":"יפה רוטשילד","phone":"0506285268","balance":-1750},{"name":"עופרה אמיר","phone":"0548017297","balance":-1050},{"name":"גלעד זומר","phone":"0544466825","balance":-700},{"name":"ענבר בלוזר","phone":"0544323642","balance":-350},{"name":"נגה ליבן","phone":"0524494795","balance":-1400},{"name":"יאיר בשארי","phone":"0506233624","balance":0},{"name":"דודי שטרית","phone":"0526407806","balance":-350},{"name":"אליעזר ישראלי","phone":"0547886080","balance":-350},{"name":"דניאל הירשוביץ","phone":"0536260286","balance":0},{"name":"דוד ישראלי","phone":"0506696540","balance":-1050},{"name":"נתן לב","phone":"0546929918","balance":-350},{"name":"אפרת גנטק","phone":"0503699225","balance":-2100},{"name":"עדן עראקי","phone":"0507263868","balance":0},{"name":"רועי שושני","phone":"0506207079","balance":0},{"name":"שירי שושני","phone":"0506622210","balance":0},{"name":"מיכל זאם","phone":"0509380266","balance":-1750},{"name":"ליאור כהן","phone":"0522870808","balance":0},{"name":"חן בנית","phone":"0508511221","balance":0},{"name":"יהודה הלמן","phone":"0559476460","balance":0},{"name":"מיכאל ביטון","phone":"0528680202","balance":-2800},{"name":"גדעון דיין","phone":"0546211965","balance":-1050},{"name":"ליטל קומל","phone":"0523649270","balance":-1050},{"name":"קיילה זכריה","phone":"0584247276","balance":0},{"name":"תמר קורנהנדלר","phone":"0525866351","balance":-700},{"name":"שירה מלכה","phone":"0512560200","balance":-1050},{"name":"אורטל עידו","phone":"0502057770","balance":0},{"name":"תמר מייבום","phone":"0528404804","balance":-2800},{"name":"יונתן לבקוביץ","phone":"0546927424","balance":-2100},{"name":"שי שרביט","phone":"0524656670","balance":0},{"name":"נחמה פיבקו","phone":"0544947651","balance":-350},{"name":"גבי חיון","phone":"0546833886","balance":-700},{"name":"שקד פיבקו","phone":"0544947651","balance":-1050},{"name":"שירה יצחק","phone":"0507176699","balance":-2100},{"name":"אסנת מישאל","phone":"0544305190","balance":0},{"name":"יניב פרץ","phone":"0547883322","balance":-350},{"name":"מעיין אליאס רוביצק","phone":"0549554990","balance":0},{"name":"בוריס קלר","phone":"0523964933","balance":-700},{"name":"יהודית בלוך","phone":"0542623809","balance":-2450},{"name":"מרב לוי","phone":"0527501456","balance":-1400},{"name":"בועז שי זוסמן","phone":"0587108115","balance":-2100},{"name":"קווין טשגיאן","phone":"0507319931","balance":-2000},{"name":"ינאי נבו","phone":"0532705557","balance":0},{"name":"דוד אלדר","phone":"0542006077","balance":-1200},{"name":"קרן סיטון","phone":"0532860084","balance":0},{"name":"לאה גרנסיה","phone":"0526443866","balance":0},{"name":"דודי כהן","phone":"0502206325","balance":-350},{"name":"נעם כהנא","phone":"0549910958","balance":-1400},{"name":"אסתר צרויה","phone":"0534990012","balance":-350},{"name":"סיגל חשין","phone":"0528501585","balance":0},{"name":"סטס פרנקין","phone":"0509877708","balance":-700},{"name":"עאדל אלי עבידאת","phone":"0524223107","balance":0},{"name":"ליהי חדד","phone":"0526670512","balance":0},{"name":"נועם רייכמן","phone":"0584899555","balance":-350},{"name":"נעמי בנימיני","phone":"0506256445","balance":-700},{"name":"דבורה וויסבלט","phone":"0547826332","balance":-1400},{"name":"אליעזר קוואס","phone":"0545798820","balance":0},{"name":"דינה מיכאל שמואל","phone":"0508338158","balance":0},{"name":"ענת מוגדסי","phone":"0525588093","balance":0},{"name":"שירן פרנגי","phone":"0523808516","balance":0},{"name":"יובל בן נעים","phone":"0506233513","balance":-700},{"name":"דניאל לחמני","phone":"0527055141","balance":0},{"name":"רותי חזן","phone":"0506344242","balance":0},{"name":"דביר שבו","phone":"0586296636","balance":0},{"name":"עינת כמון","phone":"0545992882","balance":-350},{"name":"עידן אברהם","phone":"0526694399","balance":0},{"name":"ציפי שומר","phone":"0522282437","balance":-350},{"name":"רבקה הירשוביץ","phone":"0503322826","balance":-350},{"name":"ירון טווינה","phone":"0525597772","balance":-350},{"name":"עטרה יוסטר","phone":"0545493744","balance":-350},{"name":"אלעד איסוביץ","phone":"0526627075","balance":-350},{"name":"טליה טובי","phone":"0543166808","balance":0}];
+
+const S=[{name:"עירית קרונר",time:"08:30"},{name:"עינת שטרן",time:"09:00"},{name:"רונית טל",time:"09:30"},{name:"מיכאל ביטון",time:"10:00"},{name:"נעם בהנא",time:"10:30"},{name:"איירה סקופ",time:"11:00"},{name:"אלון מזרחי",time:"11:30"},{name:"אפרים דמברוביץ",time:"12:00"},{name:"דודי שטרית",time:"12:30"},{name:"תמר קורנהנדלר",time:"13:00"},{name:"עדי בנימין",time:"13:30"},{name:"ענת מוגדסי",time:"14:00"},{name:"שירה מלכה",time:"14:30"},{name:"חיה מילר",time:"15:00"},{name:"רון ברזני",time:"15:30"},{name:"מרים פפמסטר",time:"16:00"},{name:"הרצל ביבי",time:"16:30"},{name:"שירה יצחק",time:"17:00"},{name:"סטס פרנקין",time:"17:30"}];
+
+const D=C.filter(c=>c.balance<0);
+let phones={},remChk={},dbtChk={},editIdx=null,queue=[],qi=0,curDay="מחר";
+
+S.forEach((_,i)=>remChk[i]=true);
+D.forEach((_,i)=>dbtChk[i]=true);
+
+function getPh(name){if(phones[name]!==undefined)return phones[name];const c=C.find(x=>x.name===name);return c?c.phone:"";}
+function waUrl(ph,msg){const e=encodeURIComponent(msg);return ph?`whatsapp://send?phone=972${ph.replace(/^0/,"")}&text=${e}`:`whatsapp://send?text=${e}`;}
+function fmtT(t){const[h,m]=t.split(":").map(Number);const p=h<12?"בבוקר":h<17?'אחה"צ':"בערב";return `${h}:${String(m).padStart(2,"0")} ${p}`;}
+function remMsg(name,time,day){return `היי ${name} \uD83D\uDE0A בוקר טוב!\nנתראה ${day} בשעה ${fmtT(time)} \uD83D\uDE4F`;}
+function dbtMsg(name,amt){return `היי ${name} \uD83D\uDE0A\nתזכורת קטנה לגבי יתרת חוב של ${Math.abs(amt).toLocaleString()} \u20AA.\n\nניתן לשלם בהעברה בנקאית:\nבנק לאומי 10 | סניף 921\nחשבון 33930078\nתומר רונן פיזיותרפיה בע"מ\n\nאו באשראי \u2014 אשלח קישור בנפרד \uD83D\uDCB3\n\nתודה רבה! \uD83D\uDE4F`;}
+
+function showPg(p){
+  document.querySelectorAll(".pg").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".nb").forEach(x=>x.classList.remove("on"));
+  document.getElementById("pg-"+p).classList.add("on");
+  document.getElementById("nb-"+p).classList.add("on");
+  if(p==="clt")renderClt();
+}
+
+function selDay(el){
+  document.querySelectorAll(".dp").forEach(x=>x.classList.remove("sel"));
+  el.classList.add("sel");
+  const ci=document.getElementById("custDay");
+  if(el.dataset.day==="custom"){ci.classList.add("vis");ci.focus();curDay="";}
+  else{ci.classList.remove("vis");curDay=el.dataset.day;}
+  renderRem();
+}
+document.getElementById("custDay").addEventListener("input",function(){curDay=this.value.trim();renderRem();});
+
+// ── REMINDERS ──
+document.getElementById("remSelAll").addEventListener("click",function(){
+  const all=S.every((_,i)=>remChk[i]);
+  S.forEach((_,i)=>{remChk[i]=!all;});
+  renderRem();
+});
+
+function renderRem(){
+  const day=curDay||document.getElementById("custDay").value.trim()||"מחר";
+  const chk=S.filter((_,i)=>remChk[i]).length,tot=S.length;
+  const cb=document.getElementById("remCb");
+  cb.className="cb"+(chk===tot?" on":chk>0?" pt":"");cb.textContent=chk===tot?"✓":chk>0?"−":"";
+  document.getElementById("remCnt").textContent=`${chk} מתוך ${tot}`;
+  document.getElementById("remBtn").disabled=chk===0;
+  document.getElementById("remBtnTxt").textContent=chk>0?`שלח ל\u2010${chk} לקוחות`:"בחר לקוחות";
+  document.getElementById("remList").innerHTML=S.map((s,i)=>{
+    const ok=remChk[i],p=getPh(s.name);
+    return `<div class="row ${ok?"":"off"}" data-ri="${i}"><div class="rcb">${ok?"✓":""}</div><div class="ri"><div class="rn">${s.name}</div><div class="rt">${s.time}</div>${!p?'<div class="nph">⚠️ אין מספר</div>':""}</div></div>`;
+  }).join("");
+  document.querySelectorAll("#remList .row").forEach(el=>{
+    el.addEventListener("click",function(){const i=parseInt(this.dataset.ri);remChk[i]=!remChk[i];renderRem();});
+  });
+}
+
+function startRem(){
+  const day=curDay||document.getElementById("custDay").value.trim()||"מחר";
+  queue=S.map((s,i)=>({...s,msg:remMsg(s.name,s.time,day),ph:getPh(s.name),mode:"g",skip:!remChk[i]})).filter(x=>!x.skip);
+  qi=0;showMod();
+}
+
+// ── DEBTS ──
+document.getElementById("dbtSelAll").addEventListener("click",function(){
+  const all=D.every((_,i)=>dbtChk[i]);
+  D.forEach((_,i)=>{dbtChk[i]=!all;});
+  renderDbt();
+});
+
+function renderDbt(){
+  const chk=D.filter((_,i)=>dbtChk[i]).length,tot=D.length;
+  const totAmt=D.reduce((a,c)=>a+c.balance,0);
+  document.getElementById("dbtSub").textContent=`${tot} לקוחות · סה"כ חוב: ${Math.abs(totAmt).toLocaleString()} ₪`;
+  const cb=document.getElementById("dbtCb");
+  cb.className="cb"+(chk===tot?" ron":chk>0?" rpt":"");cb.textContent=chk===tot?"✓":chk>0?"−":"";
+  document.getElementById("dbtCnt").textContent=`${chk} מתוך ${tot}`;
+  document.getElementById("dbtBtn").disabled=chk===0;
+  document.getElementById("dbtBtnTxt").textContent=chk>0?`שלח ל\u2010${chk} לקוחות`:"בחר לקוחות";
+  document.getElementById("dbtList").innerHTML=D.map((c,i)=>{
+    const ok=dbtChk[i];
+    return `<div class="row red ${ok?"":"off"}" data-di="${i}"><div class="rcb">${ok?"✓":""}</div><div class="ri"><div class="rn">${c.name}</div><div class="ra">${Math.abs(c.balance).toLocaleString()} ₪</div></div></div>`;
+  }).join("");
+  document.querySelectorAll("#dbtList .row").forEach(el=>{
+    el.addEventListener("click",function(){const i=parseInt(this.dataset.di);dbtChk[i]=!dbtChk[i];renderDbt();});
+  });
+}
+
+function startDbt(){
+  queue=D.map((c,i)=>({name:c.name,msg:dbtMsg(c.name,c.balance),ph:getPh(c.name),mode:"r",skip:!dbtChk[i]})).filter(x=>!x.skip);
+  qi=0;showMod();
+}
+
+// ── MODAL ──
+function showMod(){
+  if(qi>=queue.length){closeMod();return;}
+  const it=queue[qi],rem=queue.length-qi-1;
+  document.getElementById("mStep").textContent=`${qi+1} מתוך ${queue.length}`;
+  document.getElementById("mName").textContent=it.name;
+  document.getElementById("mMsg").innerHTML=it.msg.replace(/\n/g,"<br>");
+  const wa=document.getElementById("mWa");
+  wa.href=waUrl(it.ph,it.msg);
+  wa.className="mwa "+(it.mode==="r"?"r":"g");
+  wa.onclick=function(){qi++;setTimeout(showMod,500);};
+  const sk=document.getElementById("mSkip");
+  sk.textContent=rem>0?`דלג — הבא › (${rem} נשארו)`:"סיום ✅";
+  sk.onclick=function(){qi++;showMod();};
+  document.getElementById("mov").classList.add("on");
+}
+function closeMod(){document.getElementById("mov").classList.remove("on");}
+document.getElementById("mov").addEventListener("click",function(e){if(e.target===this)closeMod();});
+
+// ── CLIENTS ──
+function renderClt(){
+  const q=document.getElementById("srch").value.trim();
+  const list=q?C.filter((c,i)=>{C._fi=i;return c.name.includes(q);}):C;
+  const indices=q?C.map((c,i)=>c.name.includes(q)?i:-1).filter(i=>i>=0):C.map((_,i)=>i);
+  if(!indices.length){document.getElementById("cltList").innerHTML='<div class="em">לא נמצא</div>';return;}
+  document.getElementById("cltList").innerHTML=indices.map(i=>{
+    const c=C[i],p=getPh(c.name),isE=editIdx===i;
+    return `<div class="mr">
+      <div class="mt">
+        <div class="mna">${c.name}</div>
+        ${c.balance<0?`<span class="mb d">${Math.abs(c.balance).toLocaleString()} ₪</span>`:`<span class="mb ok">✓</span>`}
+        <div class="mph ${p?"":"mis"}">${p||"אין טלפון"}</div>
+        <button class="eb" data-ei="${i}">${isE?"ביטול":p?"ערוך":"+ הוסף"}</button>
+      </div>
+      ${isE?`<div class="per"><input class="pei" id="pei${i}" type="tel" value="${p}" placeholder="0501234567"><button class="psb" data-si="${i}">שמור</button></div>`:""}
+    </div>`;
+  }).join("");
+  document.querySelectorAll(".eb").forEach(b=>{
+    b.addEventListener("click",function(){const i=parseInt(this.dataset.ei);editIdx=editIdx===i?null:i;renderClt();if(editIdx===i)setTimeout(()=>{const el=document.getElementById("pei"+i);if(el){el.focus();el.select();}},50);});
+  });
+  document.querySelectorAll(".psb").forEach(b=>{
+    b.addEventListener("click",function(){const i=parseInt(this.dataset.si);const el=document.getElementById("pei"+i);if(el){phones[C[i].name]=el.value.trim().replace(/\D/g,"");}editIdx=null;renderClt();});
+  });
+}
+
+// ── INIT ──
+const now=new Date();
+const days=["ראשון","שני","שלישי","רביעי","חמישי","שישי","שבת"];
+document.getElementById("sd").textContent=`${days[now.getDay()]} ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+renderRem();
+renderDbt();
+</script>
+</body>
+</html>
